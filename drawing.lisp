@@ -127,3 +127,22 @@
           do (draw-line bitmap 0 (1- size) x 0)
              (draw-line bitmap 0 (1- size) (1- size) x))
     (draw bitmap)))
+
+(defun fill-bitmap (bitmap x y)
+  (unless (aref bitmap y x)
+    (setf (aref bitmap y x) t)
+    (fill-bitmap bitmap (+ x 1) y)
+    (fill-bitmap bitmap (- x 1) y)
+    (fill-bitmap bitmap x (+ y 1))
+    (fill-bitmap bitmap x (- y 1))))
+
+(defun draw-filled-circle (bitmap x-center y-center radius)
+  (draw-circle bitmap x-center y-center radius)
+  (fill-bitmap bitmap x-center y-center))
+
+(defun sun (&key (size 64))
+  "Draw a sun."
+  (let ((bitmap (make-bitmap size size))
+        (mid (floor size 2)))
+    (draw-filled-circle bitmap mid mid (1- mid))
+    (draw bitmap)))
